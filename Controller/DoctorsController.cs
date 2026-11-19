@@ -73,7 +73,7 @@ public class DoctorsController : ControllerBase
 		{
 			return NotFound(new
 			{
-				message = "The requested doctor could not be found!"
+				message = "Zahtevanega zdravnika ni bilo mogoče najti."
 			});
 		}
 
@@ -87,14 +87,14 @@ public class DoctorsController : ControllerBase
 	{
 		if (viewModel.Certificate is null || viewModel.Picture is null)
 		{
-			return BadRequest("Please upload all the required files.");
+			return BadRequest("Prosimo, naložite vse zahtevane datoteke.");
 		}
 
 		var doctor = await _context.Doctors
 			.SingleOrDefaultAsync(d => d.UserId == User.GetId(), HttpContext.RequestAborted);
 		if (doctor is not null)
 		{
-			return BadRequest("You are already a doctor!");
+			return BadRequest("Že ste zdravnik.");
 		}
 
 		// FileSystem
