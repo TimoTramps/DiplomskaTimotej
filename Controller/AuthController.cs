@@ -34,7 +34,7 @@ public class AuthController : ControllerBase
 			.SingleOrDefaultAsync(u => u.Email == viewModel.Email, HttpContext.RequestAborted);
 		if (user is null)
 		{
-			return BadRequest("Invalid user");
+			return BadRequest("Neveljaven uporabnik");
 		}
 
 		var hashedPassword = _passwordHasher.HashPassword(user, viewModel.Password);
@@ -56,13 +56,13 @@ public class AuthController : ControllerBase
 			.SingleOrDefaultAsync(u => u.Email == viewModel.Email);
 		if (user is null)
 		{
-			return BadRequest("Invalid login attempt.");
+			return BadRequest("Neveljaven poskus prijave.");
 		}
 
 		var verificationResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, viewModel.Password);
 		if (verificationResult is not PasswordVerificationResult.Success)
 		{
-			return BadRequest("Invalid login attempt.");
+			return BadRequest("Neveljaven poskus prijave.");
 		}
 
 		var result = await CreateToken(user);
@@ -77,12 +77,12 @@ public class AuthController : ControllerBase
 	{
 		if (!viewModel.Provider.Equals("Google", StringComparison.OrdinalIgnoreCase))
 		{
-			return BadRequest("Selected provider is not supported.");
+			return BadRequest("Izbrani ponudnik ni podprt.");
 		}
 
 		if (string.IsNullOrEmpty(viewModel.Token))
 		{
-			return BadRequest("Invalid login attempt.");
+			return BadRequest("Neveljaven poskus prijave.");
 		}
 
 		GoogleJsonWebSignature.Payload? socialUser = null;
@@ -98,12 +98,12 @@ public class AuthController : ControllerBase
 		}
 		catch
 		{
-			return BadRequest("Invalid login attempt.");
+			return BadRequest("Neveljaven poskus prijave.");
 		}
 
 		if (socialUser is null)
 		{
-			return BadRequest("Invalid login attempt.");
+			return BadRequest("Neveljaven poskus prijave.");
 		}
 
 		var user = await _context.Users
@@ -124,7 +124,7 @@ public class AuthController : ControllerBase
 			_context.Users.Add(user);
 			await _context.SaveChangesAsync(HttpContext.RequestAborted);
 
-			Console.WriteLine("New user has been created!");
+			Console.WriteLine("Ustvarjen je bil nov uporabnik!");
 		}
 
 		var result = await CreateToken(user);
