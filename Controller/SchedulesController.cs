@@ -42,17 +42,17 @@ public class SchedulesController : ControllerBase
 			.SingleOrDefaultAsync(d => d.UserId == User.GetId(), HttpContext.RequestAborted);
 		if (doctor is null)
 		{
-			return BadRequest("You are not a doctor.");
+			return BadRequest("Niste zdravnik.");
 		}
 
 		if (!doctor.IsVerified)
 		{
-			return BadRequest("You need to be verified first.");
+			return BadRequest("Najprej morate biti preverjeni.");
 		}
 
 		if (doctor.Schedules.Any())
 		{
-			return BadRequest("Schedule has been set already!!");
+			return BadRequest("Razpored je že določen.");
 		}
 		
 		var schedule = new Schedule
@@ -77,13 +77,13 @@ public class SchedulesController : ControllerBase
 		var schedule = _context.Schedules.Find(id);
 		if (schedule is null)
 		{
-			return BadRequest("Invalid schedule");
+			return BadRequest("Neveljaven urnik.");
 		}
 
 		var doctorId = User.GetDoctorId();
 		if (schedule.DoctorId != doctorId)
 		{
-			return BadRequest("You don't own that schedule.");
+			return BadRequest("Ta urnik ni tvoj.");
 		}
 
 		schedule.Location = viewModel.Location;
@@ -102,7 +102,7 @@ public class SchedulesController : ControllerBase
 		var schedule = await _context.Schedules.FindAsync(new object[]{ id }, HttpContext.RequestAborted);
 		if (schedule is null)
 		{
-			return BadRequest($"Schedule with id {id} cannot be recognized.");
+			return BadRequest($"Razporeda z ID-jem {id} ni mogoče prepoznati.");
 		}
 
 		var timeslot = new TimeSlot
