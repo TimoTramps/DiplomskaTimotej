@@ -42,22 +42,22 @@ public class BookingsController : ControllerBase
 			.SingleOrDefaultAsync(ts => ts.Id == viewModel.TimeSlotId);
 		if (timeSlot is null)
 		{
-			return BadRequest("Selected time-slot could not be recognized.");
+			return BadRequest("Izbranega časovnega intervala ni bilo mogoče prepoznati.");
 		}
 
 		if (viewModel.AppointmentTime < DateTime.Today)
 		{
-			return BadRequest("The selected appointment-time cannot be in the past! 😁");
+			return BadRequest("Izbrani čas sestanka ne sme biti v preteklosti.");
 		}
 
 		if (viewModel.AppointmentTime.DayOfWeek != timeSlot.Schedule.Day)
 		{
-			return BadRequest("Doctor is not available at the selected day!");
+			return BadRequest("Zdravnik na izbrani dan ni na voljo.");
 		}
 
 		if (timeSlot.MaxAppointments <= timeSlot.Bookings.Count)
 		{
-			return BadRequest("Wuu kaa buuxaa manta!!");
+			return BadRequest("Nobeden ni na voljo.");
 		}
 
 		var ticketPrice = timeSlot.Schedule.Doctor.TicketPrice;
